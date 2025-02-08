@@ -133,7 +133,7 @@ export default function FeedbackForm() {
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
         />
-        <button className="bg-black text-white w-full mt-2 p-2 rounded disabled:text-gray-400" disabled = {questionCooldown}  onClick={() => handleQuestionSubmit(feedback)}>
+        <button className="bg-black text-white w-full mt-2 p-2 rounded disabled:text-gray-400" disabled = {questionCooldown > 0}  onClick={() => handleQuestionSubmit(feedback)}>
         {questionCooldown ? (
               <div className = "flex flex-row items-center justify-center gap-2">
               <ClipLoader size={20} color="#ffffff" />
