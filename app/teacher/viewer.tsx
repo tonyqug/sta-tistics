@@ -169,7 +169,7 @@ export default function PdfViewer() {
   console.log(fullScreen)
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-screen bg-gradient-to-b from-green-50 to-green-100">
       <div className="p-6 rounded-lg w-full items-center flex flex-col justify-center">
       {fullScreen==0 &&
       <div className="translate-y-[100px] flex flex-row z-10">    
