@@ -48,8 +48,8 @@ export default function Student() {
           </div>
         </div>
         :
-        <div className = "flex w-full flex-col items-center justify-center min-h-screen">
-          <div>
+        <div className = "flex w-full flex-col items-center justify-center min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+          <div className = "bg-gray-50 py-2 px-4 rounded-t-lg">
               Connected to code: <span className = "text-green-500">{code}</span>
           </div>
           <FeedbackForm/>
