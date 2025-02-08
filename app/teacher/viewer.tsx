@@ -19,6 +19,7 @@ export default function PdfViewer() {
     if (file) {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      
       setPdfData(pdf);
       renderPage(pageNumber, pdf);
       setNumPages(pdf.numPages);
@@ -27,9 +28,9 @@ export default function PdfViewer() {
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === 'ArrowLeft') {
-        setPageNumber((prev) => Math.max(prev - 1, 1));
+        setPageNumber((prev: any) => Math.max(prev - 1, 1));
       } else if (event.key === 'ArrowRight') {
-        setPageNumber((prev) => Math.min(prev + 1, numPages));
+        setPageNumber((prev: any) => Math.min(prev + 1, numPages));
       }
     };
 
