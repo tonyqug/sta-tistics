@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import FeedbackForm from './feedbackForm'
+import {useClass} from '../context/classContext'
 
 export default function Student() {
+  const {ClassCode, setClassCode} = useClass();
   const [code, setCode] = useState("");
   const [validCodes, setValidCodes] = useState(["12345"])
   const [isValidated, setIsValidated] = useState(false);
@@ -32,6 +34,7 @@ export default function Student() {
                   } else if (!validCodes.includes(code)) {
                     setError("Invalid code. Please try again.");
                   } else {
+                    setClassCode(code);
                     setIsValidated(true);
                   }
                 }

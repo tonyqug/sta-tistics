@@ -11,8 +11,9 @@ export default function PdfViewer() {
   const [pdfData, setPdfData] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [code, setCode] = useState("");
+  const [numPages, setNumPages] = useState(1);
   const canvasRef = useRef(null);
-
+  const renderTaskRef: any = useRef(null);
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -20,8 +21,21 @@ export default function PdfViewer() {
       const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
       setPdfData(pdf);
       renderPage(pageNumber, pdf);
+      setNumPages(pdf.numPages);
     }
   };
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.key === 'ArrowLeft') {
+        setPageNumber((prev) => Math.max(prev - 1, 1));
+      } else if (event.key === 'ArrowRight') {
+        setPageNumber((prev) => Math.min(prev + 1, numPages));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [numPages]);
 
   const renderPage = (num: any, pdf: any) => {
     pdf.getPage(num).then((page: any) => {
@@ -32,11 +46,15 @@ export default function PdfViewer() {
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
+        if (renderTaskRef.current) {
+            renderTaskRef.current.cancel();
+          }
+
         const renderContext = {
             canvasContext: context,
             viewport: viewport,
         };
-        page.render(renderContext);
+        renderTaskRef.current = page.render(renderContext);
       }
       
     });
@@ -51,19 +69,19 @@ export default function PdfViewer() {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="p-6 rounded-lg w-full items-center flex flex-col justify-center">
-      <div className="mb-4">
-        <label htmlFor="file-upload" className="block w-[400px] shadow-lg whitespace-nowrap font-medium text-[20pt] text-gray-700 cursor-pointer bg-green-200 w-full p-2 rounded-lg text-center">
-            {pdfData ? `Class Code: ${code}`:"Upload Lecture PDF"}
-        </label>
-        <input
-            id="file-upload"
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-            className="hidden"
-        />
+        {!pdfData && <div className="mb-4">
+            <label htmlFor="file-upload" className="block w-[400px] shadow-lg whitespace-nowrap font-medium text-[20pt] text-gray-700 cursor-pointer bg-green-200 w-full p-2 rounded-lg text-center">
+                {pdfData ? `Class Code: ${code}`:"Upload Lecture PDF"}
+            </label>
+            <input
+                id="file-upload"
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="hidden"
+            />
    
-        </div>
+        </div>}
 
         <Link 
           href="/analytics"
@@ -75,7 +93,7 @@ export default function PdfViewer() {
         {pdfData && (
           <div className="relative">
             <canvas ref={canvasRef} className="h-full max-w-full border rounded-md"></canvas>
-            <div className="flex justify-between items-center mt-4">
+            {/* <div className="flex justify-between items-center mt-4">
               <button
                 className="px-4 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600 transition duration-200"
                 onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
@@ -89,7 +107,7 @@ export default function PdfViewer() {
               >
                 Next &#8594;
               </button>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

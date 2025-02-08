@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-require('dotenv').config();
+import {useClass} from '../context/classContext'
 
 export default function FeedbackForm() {
+  const {ClassCode, setClassCode} = useClass();
   const [feedback, setFeedback] = useState('');
 
   const handleSubmit = async (feedback: number) => {
@@ -14,12 +15,12 @@ export default function FeedbackForm() {
 
   const sendToBackend = async (data: number) => {
     try {
-      const response = await fetch(`${process.env.SERVER_URL}/api/insert-student-feedback`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/insert-student-feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({class: "010215",student: 'studentName', response: data, slide: 1}),
+        body: JSON.stringify({class: ClassCode,student: 'studentName', response: data, slide: 1}),
       });
 
       if (!response.ok) {

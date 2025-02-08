@@ -1,5 +1,6 @@
 import './globals.css'
 import { Outfit } from 'next/font/google'
+import {ClassProvider} from './context/classContext'
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -19,7 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={outfit.className}>
-      <body>{children}</body>
+      <body>
+        <ClassProvider>
+          {children}
+        </ClassProvider>
+      </body>
     </html>
   )
 }
