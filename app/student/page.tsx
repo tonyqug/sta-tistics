@@ -7,7 +7,7 @@ import {useClass} from '../context/classContext'
 export default function Student() {
   const {ClassCode, setClassCode} = useClass();
   const [code, setCode] = useState("");
-  const [validCodes, setValidCodes] = useState(["12345"])
+  const [validCodes, setValidCodes] = useState<any>([])
   const [isValidated, setIsValidated] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,11 +27,21 @@ export default function Student() {
               }}
               placeholder="Enter 5-digit code"
               maxLength={5}
-              onKeyDown={(e) => {
+              onKeyDown={async (e) => {
                 if (e.key === "Enter") {
+                  const response2 = await  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/fetch-all-classes`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({}),
+                  })
+                  const json = await response2.json()
+                  console.log(json)
+                  setValidCodes(json)
                   if (code.length !== 5) {
                     setError("Please enter a 5-digit code");
-                  } else if (!validCodes.includes(code)) {
+                  } else if (!json.includes(code)) {
                     setError("Invalid code. Please try again.");
                   } else {
                     setClassCode(code);

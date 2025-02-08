@@ -12,6 +12,26 @@ export default function FeedbackForm() {
     await sendToBackend(feedback);
     setFeedback('');
   };
+  const handleQuestionSubmit = async (question:string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/insert-student-question`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({class: ClassCode, question: question}),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Response from Flask:', result);
+    } catch (error) {
+      console.error('Failed to send data to backend:', error);
+    }
+  };
 
   const sendToBackend = async (data: number) => {
     try {
@@ -50,7 +70,7 @@ export default function FeedbackForm() {
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
         />
-        <button className="bg-black text-white w-full mt-2 p-2 rounded" onClick={() => handleSubmit(2)}>Submit</button>
+        <button className="bg-black text-white w-full mt-2 p-2 rounded" onClick={() => handleQuestionSubmit(feedback)}>Submit</button>
       </div>
     </div>
   );

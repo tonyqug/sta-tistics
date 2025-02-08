@@ -1,6 +1,6 @@
 import os
 import time
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 
@@ -29,20 +29,23 @@ def insert_student_question():
 @app.route('/api/insert-class-data', methods=['POST'])
 def insert_class_data():
     data = request.get_json()
-    insert_class_data(data)
+    insertClassData(data)
+    return {}
 
-# expects { name: , data: }
+# expects { classCode: data: }
 @app.route('/api/upload-presentation', methods=['POST'])
 def upload_presentation():
     data = request.get_json()
-    print(data)
-    uploadPresentation(data)
+    print(len(data["data"]))
+    uploadPresentation(data["classCode"],data["data"])
+    return {}
 
 # expects { classCode: , slide: }
 @app.route('/api/update-class-data', methods=['POST'])
 def update_class_data():
     data = request.get_json()
     updateClassData(data["classCode"], data["slide"])
+    return {}
 
 # expects { class: }
 @app.route('/api/delete-class-data', methods=['POST'])
@@ -68,5 +71,10 @@ def fetch_class_slide():
     data = request.get_json()
     return fetchClassData(data["class"])["slide"]
 
+# expects { class: }
+@app.route('/api/fetch-all-classes', methods=['POST'])
+def fetch_all_classes():
+    return jsonify(fetchAllClasses())
+
 if __name__ == "__main__":
-    app.run(debug = True, port = 5000)
+    app.run(debug = True, port = 5328)

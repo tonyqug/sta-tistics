@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pdf2image import convert_from_bytes
 import io
 from PIL import Image
+import base64
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
@@ -47,7 +48,7 @@ def generate_response(question, classCode):
     # Pass slides through Google Generative AI model
 
     inputs = {
-        "question": question,
+        "question":  "You are an expert in academia teaching a lecture with slides. Linked is the current and previous slide. Answer the student's question: " + question,
         "current_slide": current_slide_bytes,
         "previous_slide": previous_slide_bytes,
     }
@@ -62,10 +63,15 @@ def insertStudentQuestions(data):
     return client.from_("student_questions").insert(data).execute()
 
 def insertClassData(data):
-    return client.from_("class_data").insert(data).execute()
+    try:
+        return client.from_("class_data").insert(data).execute()
+    except Exception as e:
+        print(e)
+        return
 
-def uploadPresentation(data):
-    return client.storage.from_("presentations").upload(data["name"], data["data"])
+def uploadPresentation(classCode, data):
+    file_data = base64.b64decode(data)
+    return client.storage.from_("presentations").upload(path = f"{classCode}.pdf", file=file_data,file_options={"content-type": "application/pdf"})
 
 def updateClassData(classCode, slide):
     return (    
@@ -96,4 +102,12 @@ def fetchStudentQuestions(classId):
     return client.table("student_questions").select("*").eq("class", classId).execute()
 
 def fetchClassData(classId):
-    return client.table("class_data").select("*").eq("class", classId).execute()[0]
+    return client.table("class_data").select("*").eq("class", classId).execute().data[0]
+
+def fetchAllClasses():
+    response = client.table('class_data').select('class').execute()
+    
+
+    # Extract the 'class' values from the response
+    class_list = [item['class'] for item in response.data]
+    return class_list
