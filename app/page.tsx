@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       <div className="relative mt-24 text-center text-green-600/50 text-sm">
-        Built by students, Madefor students
+        Built by students, Made for students
       </div>
     </div>
   )
