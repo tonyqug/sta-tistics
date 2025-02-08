@@ -7,11 +7,11 @@ import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 export default function PdfViewer() {
-  const [pdfData, setPdfData] = useState(null);
+  const [pdfData, setPdfData] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const canvasRef = useRef(null);
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
       const arrayBuffer = await file.arrayBuffer();
@@ -21,19 +21,22 @@ export default function PdfViewer() {
     }
   };
 
-  const renderPage = (num, pdf) => {
-    pdf.getPage(num).then((page) => {
+  const renderPage = (num: any, pdf: any) => {
+    pdf.getPage(num).then((page: any) => {
       const viewport = page.getViewport({ scale: 1 });
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      const canvas: any = canvasRef.current;
+      if (canvas){
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
 
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      page.render(renderContext);
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+        };
+        page.render(renderContext);
+      }
+      
     });
   };
 
