@@ -29,7 +29,7 @@ export default function Student() {
               maxLength={5}
               onKeyDown={async (e) => {
                 if (e.key === "Enter") {
-                  const response2 = await  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/fetch-all-classes`, {
+                  const response2 = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/fetch-all-classes`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

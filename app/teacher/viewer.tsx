@@ -15,6 +15,7 @@ export default function PdfViewer() {
   const [numPages, setNumPages] = useState(1);
   const canvasRef = useRef(null);
   const renderTaskRef: any = useRef(null);
+  const [fullScreen, setFullScreen] = useState(0);
 
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
@@ -52,16 +53,6 @@ export default function PdfViewer() {
           body: JSON.stringify({"classCode": newCode, "data":base64String}),
         })
 
-
-        const response2 = await  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/insert-class-data`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({"class": newCode, "slide":1}),
-        })
-
-
         const result = await response.json();
         console.log(result);
     };
@@ -80,7 +71,17 @@ export default function PdfViewer() {
         body: JSON.stringify({class: prevCode}),
       }).catch(error=>{})
     }
+    
     setPrevCode(code)
+    if(code) {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/insert-class-data`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({"class": code, "slide":1}),
+      })
+    }
   }, [code])
 
 
@@ -124,6 +125,8 @@ export default function PdfViewer() {
         setPageNumber((prev: any) => Math.max(prev - 1, 1));
       } else if (event.key === 'ArrowRight') {
         setPageNumber((prev: any) => Math.min(prev + 1, numPages));
+      } else if (event.key === 'Enter') {
+        setFullScreen((prev: any) => 1 - prev);
       }
     };
 
@@ -160,33 +163,38 @@ export default function PdfViewer() {
     }
   }, [pageNumber, pdfData]);
 
+  console.log(fullScreen)
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="p-6 rounded-lg w-full items-center flex flex-col justify-center">
-        {true && <div className="translate-y-[20px] flex flex-row z-10">
-            <label htmlFor="file-upload" className="block w-[400px] shadow-lg whitespace-nowrap font-medium text-[20pt] text-gray-700 cursor-pointer bg-green-200 w-full p-2 rounded-lg text-center">
-                {pdfData ? `Class Code: ${code}`:"Upload Lecture PDF"}
-            </label>
-            <input
-                id="file-upload"
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="hidden"
-            />
-            <Link 
+      {fullScreen==0 &&
+      <div className="translate-y-[20px] flex flex-row z-10">    
+          <label htmlFor="file-upload" className="block w-[400px] shadow-lg whitespace-nowrap font-medium text-[20pt] text-gray-700 cursor-pointer bg-green-200 w-full p-2 rounded-lg text-center">
+              {pdfData ? `Class Code: ${code}`:"Upload Lecture PDF"}
+          </label>
+          <input
+              id="file-upload"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="hidden"
+          />
+          <Link 
             href="/analytics"
             className=" whitespace-nowrap flex flex-row items-center px-3 ml-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition duration-200"
           >
             View Analytics
           </Link>
-        </div>}
+        </div>
+        }
 
 
 
         {pdfData && (
-          <div className="relative">
-            <canvas ref={canvasRef} className="h-[90%] max-w-full border rounded-md"></canvas>
+          <div className={(fullScreen==0?"relative":" absolute w-screen h-screen top-0 left-0 flex items-center justify-center bg-black/75")}>
+
+            <canvas ref={canvasRef} className={ "max-w-full border rounded-md " + (fullScreen==0?"h-[90%]":"h-[98%]")}></canvas>
             {/* <div className="flex justify-between items-center mt-4">
               <button
                 className="px-4 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600 transition duration-200"
@@ -205,6 +213,7 @@ export default function PdfViewer() {
           </div>
         )}
       </div>
+      {pdfData && <input className="absolute right-5 bottom-5 opacity-25 hover:opacity-100 hover:scale-125 transition-all" type="checkbox" value={fullScreen} onChange={()=>setFullScreen( 1-fullScreen)} />}
     </div>
   );
 }

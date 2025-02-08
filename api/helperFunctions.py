@@ -76,7 +76,7 @@ def uploadPresentation(classCode, data):
 def updateClassData(classCode, slide):
     return (    
         client
-        .table("class_data")  # Replace with your actual table name
+        .table("class_data")
         .update({"slide": slide})
         .eq("class", classCode)
         .execute()
