@@ -21,9 +21,12 @@ def insert_student_feedback():
 @app.route('/api/insert-student-question', methods=['POST'])
 def insert_student_question():
     data = request.get_json()
-    data["response"] = generate_response(data["question"],data["class"])
+    classData = fetchClassData(data["class"])
+    slideNumber = classData['slide']
+    data["response"] = generate_response(data["question"],data["class"], slideNumber)
+    data['slide'] = slideNumber
     insertStudentQuestions(data)
-    return data["response"]
+    return jsonify(data["response"])
 
 # expects { }
 @app.route('/api/insert-class-data', methods=['POST'])

@@ -2,7 +2,7 @@ from supabase import create_client
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
-from pdf2image import convert_from_bytes
+import fitz
 import io
 from PIL import Image
 import base64
@@ -16,45 +16,57 @@ genaimodel = genai.GenerativeModel('gemini-1.5-flash')
 
 client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
-def generate_response(question, classCode):
-    classData = fetchClassData(classCode)
-    slideNumber = classData['slide']
+def generate_response(question, classCode, slideNumber):
+    # Fetch class data
+    
 
+    # Fetch the PDF file from Supabase storage
     response = client.storage.from_("presentations").download(f"{classCode}.pdf")
     if response is None:
         return "Error: File not found."
     
-    # Load PDF into PIL images
-   
-    slides = convert_from_bytes(response, fmt="png")
+    # Open the PDF using PyMuPDF
+    pdf_document = fitz.open(stream=response, filetype="pdf")  # Load the PDF from bytes
     
-    if slideNumber >= len(slides) or slideNumber <= 0:
+    # Ensure the slide number is within range
+    if slideNumber < 1 or slideNumber > pdf_document.page_count:
         return "Error: Slide number out of range."
     
-    current_slide = slides[slideNumber - 1]
-    previous_slide = slides[slideNumber - 2] if slideNumber > 1 else None
+    # Extract the current slide
+    current_slide_page = pdf_document.load_page(slideNumber - 1)  # PyMuPDF pages are 0-indexed
+    current_slide_pix = current_slide_page.get_pixmap()  # Get the slide as a pixmap (image)
+
+    # Extract the previous slide (if exists)
+    previous_slide_pix = None
+    if slideNumber > 1:
+        previous_slide_page = pdf_document.load_page(slideNumber - 2)
+        previous_slide_pix = previous_slide_page.get_pixmap()
     
-    # Convert slides to bytes
+    # Convert current slide to bytes (PNG format)
     current_slide_bytes = io.BytesIO()
-    current_slide.save(current_slide_bytes, format='PNG')
-    current_slide_bytes = current_slide_bytes.getvalue()
-    
-    previous_slide_bytes = None
-    if previous_slide:
+    current_slide_bytes.write(current_slide_pix.tobytes("png"))
+    current_slide_bytes.seek(0)  # Rewind the BytesIO object to the beginning
+    current_slide_image = Image.open(current_slide_bytes)
+    # Convert previous slide to bytes (PNG format) if it exists
+    previous_slide_image = None
+    if previous_slide_pix:
         previous_slide_bytes = io.BytesIO()
-        previous_slide.save(previous_slide_bytes, format='PNG')
-        previous_slide_bytes = previous_slide_bytes.getvalue()
+        previous_slide_bytes.write(previous_slide_pix.tobytes("png"))
+        previous_slide_bytes.seek(0)  # Rewind the BytesIO object to the beginning
+        previous_slide_image = Image.open(previous_slide_bytes)
+  
     
     # Pass slides through Google Generative AI model
-
-    inputs = {
-        "question":  "You are an expert in academia teaching a lecture with slides. Linked is the current and previous slide. Answer the student's question: " + question,
-        "current_slide": current_slide_bytes,
-        "previous_slide": previous_slide_bytes,
-    }
-    response = genaimodel.generate_content(inputs)
+    contents = [
+        f"You are an expert in academia teaching a lecture with slides. Linked is the current slide, then the previous slide (if it exists). Answer the student's question, if it is legitimate. Don't try to answer things that you don't know very well, don't format your answer, don't have a conversation, and try to be concise. Question: `{question}`",
+         current_slide_image,
+        previous_slide_image if previous_slide_image else None
+    ]
+    contents = [content for content in contents if content is not None]  # Remove None values
     
-    return response
+    response = genaimodel.generate_content(contents)
+    
+    return response.text
 
 def insertStudentFeedback(data):
     return client.from_("student_feedback").insert(data).execute()
