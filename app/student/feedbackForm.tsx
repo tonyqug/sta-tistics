@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+require('dotenv').config();
 
 export default function FeedbackForm() {
   const [feedback, setFeedback] = useState('');
@@ -13,7 +14,7 @@ export default function FeedbackForm() {
 
   const sendToBackend = async (data: number) => {
     try {
-      const response = await fetch('http://localhost:5000/api/insert-student-feedback', {
+      const response = await fetch(`${process.env.SERVER_URL}/api/insert-student-feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
