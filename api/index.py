@@ -3,8 +3,10 @@ import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-
-from .helperFunctions import *
+if __name__ == "__main__":
+    from helperFunctions import *
+else:
+    from .helperFunctions import *
 
 app = Flask(__name__)
 CORS(app)
