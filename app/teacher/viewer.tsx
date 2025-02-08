@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import Link from 'next/link';
 
 // Set the workerSrc to the path of the pdf.worker.min.js file
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
@@ -64,6 +65,12 @@ export default function PdfViewer() {
    
         </div>
 
+        <Link 
+          href="/analytics"
+          className="mb-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition duration-200"
+        >
+          View Analytics
+        </Link>
 
         {pdfData && (
           <div className="relative">
