@@ -18,12 +18,11 @@ def insert_student_feedback():
     insertStudentFeedback(data)
     return {}
 
-# expects { class: , student: , question: }
+# expects { classCode: , question: }
 @app.route('/api/insert-student-question', methods=['POST'])
 def insert_student_question():
     data = request.get_json()
-    data["slide"] = fetchClassData(data["class"])["slide"]
-    data["response"] = genaimodel.generate_response(data["question"])("You are a expert in academia and you are helping students understand concepts during a slidedeck lecture. " + data["question"])
+    data["response"] = generate_response(data["question"],data["class"])
     insertStudentQuestions(data)
     return data["response"]
 
