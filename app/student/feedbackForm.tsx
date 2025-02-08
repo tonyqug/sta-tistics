@@ -13,12 +13,12 @@ export default function FeedbackForm() {
 
   const sendToBackend = async (data: number) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/insert-student-feedback', {
+      const response = await fetch('http://localhost:5000/api/insert-student-feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({class: 'className', student: 'studentName', slide: 1, response: data}),
+        body: JSON.stringify({class: "010215",student: 'studentName', response: data, slide: 1}),
       });
 
       if (!response.ok) {

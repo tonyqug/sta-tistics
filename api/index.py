@@ -2,10 +2,11 @@ import os
 from flask import Flask, request
 from supabase import create_client
 from dotenv import load_dotenv
-
+from flask_cors import CORS
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://tonyq.vercel.app"]}})
 
 @app.route("/api/python")
 def hello_world():
@@ -22,7 +23,9 @@ def newStudentFeedback(className, studentName, slide, response):
 client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 def insertStudentFeedback(data):
-    return client.from_("student_feedback").insert(data).execute()
+    client.from_("student_feedback").insert(data).execute()
+    return {}
+
 def insertStudentQuestions(data):
     return client.from_("student_questions").insert(data).execute()
 def uploadPresentation(data):
@@ -36,6 +39,7 @@ def fetchStudentQuestions(className):
 def insert_student_feedback():
     data = request.get_json()
     insertStudentFeedback(data)
+    return {}
 
 @app.route('/api/insert-student-question', methods=['POST'])
 def insert_student_question():
@@ -50,3 +54,6 @@ def insert_student_question():
 def upload_presentation():
     data = request.get_json()
     uploadPresentation(data)
+
+if __name__ == "__main__":
+    app.run(debug = True, port = 5000)
