@@ -6,18 +6,14 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 
 genai.configure(api_key=os.getenv("GEMINI_KEY"))
+client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+
 genaimodel = genai.GenerativeModel('gemini-1.5-flash')
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://tonyq.vercel.app"]}})
-
-@app.route("/api/python")
-def hello_world():
-    return "<p>Hello, World!</p>"
-
-client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 def insertStudentFeedback(data):
     return client.from_("student_feedback").insert(data).execute()
