@@ -1,10 +1,10 @@
-
+import DocumentViewer from './viewer';
 
 export default function Home() {
-    return (
-      <div>
-        Testing deployment..
-      </div>
-    )
-  }
-  
+  return (
+    <div>
+      <h1>PPTX Viewer</h1>
+      <DocumentViewer />
+    </div>
+  );
+}
