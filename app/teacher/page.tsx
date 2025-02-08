@@ -1,10 +1,13 @@
-import DocumentViewer from './viewer';
+'use client';
+
+import { useState } from 'react';
+import Viewer from './viewer';
 
 export default function Home() {
+
   return (
-    <div>
-      <h1>PPTX Viewer</h1>
-      <DocumentViewer />
-    </div>
+    
+        <Viewer />
+   
   );
 }
