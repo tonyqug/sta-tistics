@@ -1,7 +1,11 @@
 import os
 from flask import Flask, request
 from supabase import create_client
+import google.generativeai as genai
 from dotenv import load_dotenv
+
+genai.configure(api_key=os.getenv("GEMINI_KEY"))
+genaimodel = genai.GenerativeModel('gemini-1.5-flash')
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
@@ -40,11 +44,9 @@ def insert_student_feedback():
 @app.route('/api/insert-student-question', methods=['POST'])
 def insert_student_question():
     data = request.get_json()
-    question = data["question"]
-    response = "the-response"
-    data["response"] = response
+    data["response"] = genaimodel.generate_content(data["question"])
     insertStudentQuestions(data)
-    return response
+    return data["response"]
 
 @app.route('/api/upload-presentation', methods=['POST'])
 def upload_presentation():
