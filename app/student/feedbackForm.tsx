@@ -12,7 +12,7 @@ export default function FeedbackForm() {
 
   return (
    
-      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-2xl">
+      <div className="w-full max-w-md p-6 shadow-lg rounded-2xl bg-white" >
         <h2 className="text-2xl font-semibold text-center mb-4">How are you feeling?</h2>
         <div className="flex flex-col space-y-3">
           <div className="grid grid-cols-2 gap-3">
