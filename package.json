@@ -20,6 +20,7 @@
     "eslint-config-next": "13.4.2",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.10.2",
+    "gray-matter": "^4.0.3",
     "next": "^15.1.6",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",

@@ -4,11 +4,10 @@ from flask import Flask, request
 from flask_cors import CORS
 
 
-from .helperFunctions import*
+from helperFunctions import *
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://sta-tistics.vercel.app"]}})
-
+CORS(app)
 
 # expects { class: , student: , response: }
 @app.route('/api/insert-student-feedback', methods=['POST'])
@@ -36,6 +35,7 @@ def insert_class_data():
 @app.route('/api/upload-presentation', methods=['POST'])
 def upload_presentation():
     data = request.get_json()
+    print(data)
     uploadPresentation(data)
 
 # expects { classCode: , slide: }

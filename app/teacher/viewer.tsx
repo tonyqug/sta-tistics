@@ -11,20 +11,56 @@ export default function PdfViewer() {
   const [pdfData, setPdfData] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [code, setCode] = useState("");
+  const [prevCode, setPrevCode] = useState("");
   const [numPages, setNumPages] = useState(1);
   const canvasRef = useRef(null);
   const renderTaskRef: any = useRef(null);
+
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-      
-      setPdfData(pdf);
-      renderPage(pageNumber, pdf);
-      setNumPages(pdf.numPages);
+    if (!file) { return }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    setPdfData(pdf);
+    renderPage(pageNumber, pdf);
+    setNumPages(pdf.numPages);
+
+    let newCode = ""
+    for(let i = 0; i < 5; i++) {
+      newCode += Math.floor(Math.random() * 10)
     }
+
+    setCode(newCode)
+
+    var data = new FormData()
+    data.append('file', file, code)
+
+    console.log(process.env.NEXT_PUBLIC_SERVER_URL)
+
+    fetch(`http://127.0.0.1:5328/api/upload-presentation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({"name": code, "data":await file.arrayBuffer()}),
+    }).catch(error=>{})
+
   };
+
+  useEffect(()=> {
+    if (prevCode) {
+      fetch(`http://127.0.0.1:5328/api/delete-class-data`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({class: prevCode}),
+      }).catch(error=>{})
+    }
+    setPrevCode(code)
+  }, [code])
+
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === 'ArrowLeft') {
