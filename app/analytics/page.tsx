@@ -99,12 +99,13 @@ export default function AnalyticsPage() {
         dataset[`Slide ${num}`]["Questions"].push({"question":question, "response":response})
       });
 
+      setResponseData(dataset)
+
     } catch (error) {
       console.error('Failed to send data to backend:', error);
     }
   }
   useEffect(()=>{grabData()}, [ClassCode])
-  //grabData()
 
   const questions = [{question:"How do you do this?", answer:"Like this"}, {question:"What is the meaning of that word?", answer:"It means what it means"}, {question:"How do you do that?", answer:"Exactly how you saw your teacher do it"}, {question:"What kind of software was used to make this tool?", answer:"Nothing, basically"}]
   const data : any = [];
