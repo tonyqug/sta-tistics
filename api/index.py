@@ -87,7 +87,7 @@ def insert_class_data():
     insert_class_data(data)
 
 # expects { class: }
-@app.route('/api/delete-class-data')
+@app.route('/api/delete-class-data', methods=['POST'])
 def delete_class_data():
     data = request.get_json()
     deleteStudentFeedback(data["class"])
