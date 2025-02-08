@@ -39,7 +39,6 @@ def insert_class_data():
 @app.route('/api/upload-presentation', methods=['POST'])
 def upload_presentation():
     data = request.get_json()
-    print(len(data["data"]))
     uploadPresentation(data["classCode"],data["data"])
     return {}
 
@@ -60,13 +59,13 @@ def delete_class_data():
 @app.route('/api/fetch-student-feedback', methods=['POST'])
 def fetch_student_feedback():
     data = request.get_json()
-    return fetchStudentFeedback(data["class"])
+    return jsonify(fetchStudentFeedback(data["class"]).data)
 
 # expects { class: }
 @app.route('/api/fetch-student-questions', methods=['POST'])
 def fetch_student_questions():
     data = request.get_json()
-    return fetchStudentQuestions(data["class"])
+    return jsonify(fetchStudentQuestions(data["class"]).data)
 
 # expects { class: }
 @app.route('/api/fetch-class-slide', methods=['POST'])

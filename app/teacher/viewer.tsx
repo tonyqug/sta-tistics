@@ -3,11 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import Link from 'next/link';
+import { useClass } from '../context/classContext';
 
 // Set the workerSrc to the path of the pdf.worker.min.js file
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 export default function PdfViewer() {
+  const {ClassCode, setClassCode} = useClass();
   const [pdfData, setPdfData] = useState<any>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [code, setCode] = useState("");
@@ -81,6 +83,7 @@ export default function PdfViewer() {
         },
         body: JSON.stringify({"class": code, "slide":1}),
       })
+      setClassCode(code)
     }
   }, [code])
 

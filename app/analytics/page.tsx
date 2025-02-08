@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { Carousel } from "flowbite-react";
 import Link from 'next/link';
+import { useClass } from '../context/classContext';
 
 const customTheme: any = {
   "root": {
@@ -37,9 +38,83 @@ const customTheme: any = {
 };
 
 export default function AnalyticsPage() {
+  const {ClassCode, setClassCode} = useClass();
+  const [responseData, setResponseData] = useState({});
+
+  const grabData = async ()=> {
+    let dataset : {[id: string] : {[id : string] : any}}= {}
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/fetch-student-feedback`, {
+        method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({class: ClassCode}),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      console.log('Response from Flask:', result);
+
+      const key : {[id:number]:string}= {0:"Lost", 1:"Behind", 2:"Following", 3:"Easy"}
+      result.forEach((elem:any) => {
+        let num : number = elem.slide
+        let level : number = elem.response
+        
+        dataset[`Slide ${num}`] = dataset[`Slide ${num}`] || {"Lost":0, "Behind":0, "Following":0, "Easy":0, "Questions": [], "QuestionCount": 0}
+
+        dataset[`Slide ${num}`][key[level]] += 1
+      });
+
+      setResponseData(dataset)
+      
+      const response2 = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/fetch-student-questions`, {
+        method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({class: ClassCode}),
+      })
+
+      if (!response2.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result2 = await response2.json()
+      console.log("Resulting information")
+      console.log(result2)
+
+      result2.forEach((elem:any) => {
+        let num : number = elem.slide
+        let question : string = elem.question
+        let response : string = elem.response
+        
+        dataset[`Slide ${num}`] = dataset[`Slide ${num}`] || {"Lost":0, "Behind":0, "Following":0, "Easy":0, "Questions": [], "QuestionCount": 0}
+
+        dataset[`Slide ${num}`]["QuestionCount"] += 1
+        dataset[`Slide ${num}`]["Questions"].push({"question":question, "response":response})
+      });
+
+    } catch (error) {
+      console.error('Failed to send data to backend:', error);
+    }
+  }
+  useEffect(()=>{grabData()}, [ClassCode])
+  //grabData()
+
   const questions = [{question:"How do you do this?", answer:"Like this"}, {question:"What is the meaning of that word?", answer:"It means what it means"}, {question:"How do you do that?", answer:"Exactly how you saw your teacher do it"}, {question:"What kind of software was used to make this tool?", answer:"Nothing, basically"}]
-  const data = [{name: 'Page A', Confident: 400, Following: 500, Lost: 10, Questions:questions}, {name: 'Page B', Confident: 300, Following: 400, Lost: 200, Questions:questions}, {name: 'Page C', Confident: 300, Following: 300, Lost: 100, Questions:questions}, {name: 'Page D', Confident: 200, Following: 400, Lost: 50, Questions:questions}];
-  // TODO: Pull data
+  const data : any = [];
+
+  Object.entries(responseData).forEach(([key, value] : [any, any])=>{
+    value["name"] = key
+    data.push(value)
+  })
+
+  console.log(data)
   
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen bg-gradient-to-b from-green-50 to-green-100">
@@ -49,8 +124,9 @@ export default function AnalyticsPage() {
         <div data-carousel-item>
           <h1 className="text-center text-2xl">Reactions by Slide</h1>
           <LineChart width={700} height={300} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-            <Line type="monotone" dataKey="Confident" stroke="#00FF00" />
+            <Line type="monotone" dataKey="Easy" stroke="#00FF00" />
             <Line type="monotone" dataKey="Following" stroke="#0000FF" />
+            <Line type="monotone" dataKey="Behind" stroke="#fbff26" />
             <Line type="monotone" dataKey="Lost" stroke="#FF0000" />
             <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
             <XAxis dataKey="name" />
@@ -61,21 +137,21 @@ export default function AnalyticsPage() {
         <div data-carousel-item>
           <h1 className="text-center text-2xl">Question Count by Slide</h1>
           <LineChart width={700} height={300} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-            <Line type="monotone" dataKey="Confident" stroke="#00FF00" />
+            <Line type="monotone" dataKey="QuestionCount" stroke="#00FF00" />
             <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
           </LineChart>
         </div>
-        { data.map(slide=>
+        { data.map((slide:any)=>
         <div key={slide.name}>
           <h1 className="text-center text-2xl">Questions from {slide.name}</h1>
           <div className="overflow-y-scroll h-[300px]">
-            {slide.Questions.map((e,i)=>
+            {slide.Questions.map((e:any,i:any)=>
             <div key={i} className='px-16 py-5 text-lg'>
               <p>{e.question}</p>
-              <p className="text-black/50">Answer: {e.answer}</p>
+              <p className="text-black/50">Answer: {e.response}</p>
             </div>
             )}
           </div>
