@@ -6,6 +6,7 @@ import {useClass} from '../context/classContext'
 export default function FeedbackForm() {
   const {ClassCode, setClassCode} = useClass();
   const [feedback, setFeedback] = useState('');
+  const [response, setResponse] = useState('')
 
   const handleSubmit = async (feedback: number) => {
     console.log('Feedback submitted:', feedback);
@@ -27,6 +28,7 @@ export default function FeedbackForm() {
       }
 
       const result = await response.json();
+      setResponse(result)
       console.log('Response from Flask:', result);
     } catch (error) {
       console.error('Failed to send data to backend:', error);
@@ -64,6 +66,12 @@ export default function FeedbackForm() {
           <button onClick = {() => handleSubmit(1)} className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded">I'm a little confused</button>
           <button onClick = {() => handleSubmit(0)} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">I'm lost</button>
         </div>
+        {response.length > 0 &&
+        <div className = "w-full bg-gray-50">
+          <span className = "text-green-600">AI Response: </span>{response}
+          <br/>
+          <span className = "italic text-[10pt] text-gray-400">AI is here to answer any questions, not to have conversations!</span>
+        </div>}
         <textarea
           className="mt-4 p-2 border rounded w-full"
           placeholder="Ask a question..."
