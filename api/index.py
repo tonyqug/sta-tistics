@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 
-from helperFunctions import *
+from .helperFunctions import *
 
 app = Flask(__name__)
 CORS(app)
@@ -77,6 +77,12 @@ def fetch_class_slide():
 @app.route('/api/fetch-all-classes', methods=['POST'])
 def fetch_all_classes():
     return jsonify(fetchAllClasses())
+
+
+@app.route('/api/fetch-segmented-questions', methods=['POST'])
+def fetch_segmented_questions():
+    data = request.get_json()
+    return jsonify(fetchSegmentedQuestions(data["classCode"]))
 
 if __name__ == "__main__":
     app.run(debug = True, port = 5328)

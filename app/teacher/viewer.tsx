@@ -172,7 +172,7 @@ export default function PdfViewer() {
     <div className="flex justify-center items-center h-screen">
       <div className="p-6 rounded-lg w-full items-center flex flex-col justify-center">
       {fullScreen==0 &&
-      <div className="translate-y-[20px] flex flex-row z-10">    
+      <div className="translate-y-[100px] flex flex-row z-10">    
           <label htmlFor="file-upload" className="block w-[400px] shadow-lg whitespace-nowrap font-medium text-[20pt] text-gray-700 cursor-pointer bg-green-200 w-full p-2 rounded-lg text-center">
               {pdfData ? `Class Code: ${code}`:"Upload Lecture PDF"}
           </label>

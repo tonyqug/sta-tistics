@@ -9,10 +9,10 @@ export default function Home() {
       
       <div className="relative pt-[15vh] space-y-6 text-center">
         <h1 className="text-7xl font-outfit font-bold text-green-800 tracking-tight">
-          PEARDECK <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600">AI</span>
+          QUERY DECK {/* <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600">AI</span> */}
         </h1>
         <p className="text-xl text-green-600 text-center max-w-md mx-auto font-light">
-          Jake Pajerski
+          David Li, Tony Qu, Liam Schilling, Asher Wheaton
         </p>
       </div>
       
@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       <div className="relative mt-24 text-center text-green-600/50 text-sm">
-        Built by students, Made for students
+        Built by students, Made for students, Made for teachers
       </div>
     </div>
   )

@@ -9,7 +9,7 @@ const outfit = Outfit({
 })
 
 export const metadata = {
-  title: 'PearkdeckAI',
+  title: 'QueryDeck',
   description: 'By Students for Students',
 }
 
