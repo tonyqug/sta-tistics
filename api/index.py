@@ -1,4 +1,5 @@
 import os
+import time
 from flask import Flask, request
 from flask_cors import CORS
 from supabase import create_client
@@ -27,14 +28,17 @@ def insertClassData(data):
 def uploadPresentation(data):
     return client.storage.from_("presentations").upload(data["name"], data["data"])
 
+def updateClassData(classId, data):
+    return client.storage.from_("class_data").update(data).eq("class", classId).execute()
+
 def deleteStudentFeedback(classId):
-    return client.from_("student_feedback").delete().eq("class", classId)
+    return client.from_("student_feedback").delete().eq("class", classId).execute()
 
 def deleteStudentQuestions(classId):
-    return client.from_("student_questions").delete().eq("class", classId)
+    return client.from_("student_questions").delete().eq("class", classId).execute()
 
 def deleteClassData(classId):
-    return client.from_("class_data").delete().eq("class", classId)
+    return client.from_("class_data").delete().eq("class", classId).execute()
 
 def deleteClass(classId):
     return (deleteStudentFeedback(classId), deleteStudentQuestions(classId), deleteClassData(classId))
@@ -77,6 +81,13 @@ def upload_presentation():
     data = request.get_json()
     uploadPresentation(data)
 
+# expects { class: , slide: }
+@app.route('/api/update-class-data', methods=['POST'])
+def update_class_data():
+    data = request.get_json()
+    data["time"] = time.time()
+    updateClassData(data["class"], data)
+
 # expects { class: }
 @app.route('/api/delete-class-data', methods=['POST'])
 def delete_class_data():
@@ -88,6 +99,18 @@ def delete_class_data():
 def fetch_student_feedback():
     data = request.get_json()
     return fetchStudentFeedback(data["class"])
+
+# expects { class: }
+@app.route('/api/fetch-student-questions', methods=['POST'])
+def fetch_student_questions():
+    data = request.get_json()
+    return fetchStudentQuestions(data["class"])
+
+# expects { class: }
+@app.route('/api/fetch-class-slide', methods=['POST'])
+def fetch_class_slide():
+    data = request.get_json()
+    return fetchClassData(data["class"])["slide"]
 
 if __name__ == "__main__":
     app.run(debug = True, port = 5000)
