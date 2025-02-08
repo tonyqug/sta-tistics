@@ -1,13 +1,12 @@
 import os
 from flask import Flask, request
+from flask_cors import CORS
 from supabase import create_client
 import google.generativeai as genai
 from dotenv import load_dotenv
 
 genai.configure(api_key=os.getenv("GEMINI_KEY"))
 genaimodel = genai.GenerativeModel('gemini-1.5-flash')
-
-from flask_cors import CORS
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
@@ -18,28 +17,10 @@ CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://t
 def hello_world():
     return "<p>Hello, World!</p>"
 
-def newStudentFeedback(classId, studentName, slide, response):
-    return {
-        "class": classId,
-        "student": studentName,
-        "slide": slide,
-        "response": response
-    }
-
-def newStudentQuestion(classId, studentName, slide, question, response):
-    return {
-        "class": classId,
-        "student": studentName,
-        "slide": slide,
-        "question": question,
-        "response": response
-    }
-
 client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 def insertStudentFeedback(data):
     return client.from_("student_feedback").insert(data).execute()
-
 
 def insertStudentQuestions(data):
     return client.from_("student_questions").insert(data).execute()
@@ -58,6 +39,9 @@ def deleteStudentQuestions(classId):
 
 def deleteClassData(classId):
     return client.from_("class_data").delete().eq("class", classId)
+
+def deleteClass(classId):
+    return (deleteStudentFeedback(classId), deleteStudentQuestions(classId), deleteClassData(classId))
 
 def fetchStudentFeedback(classId):
     return client.table("student_feedback").select("*").eq("class", classId).execute()
@@ -91,19 +75,23 @@ def insert_class_data():
     data = request.get_json()
     insert_class_data(data)
 
-# expects { class: }
-@app.route('/api/delete-class-data', methods=['POST'])
-def delete_class_data():
-    data = request.get_json()
-    deleteStudentFeedback(data["class"])
-    deleteStudentQuestions(data["class"])
-    deleteClassData(data["class"])
-
 # expects { name: , data: }
 @app.route('/api/upload-presentation', methods=['POST'])
 def upload_presentation():
     data = request.get_json()
     uploadPresentation(data)
+
+# expects { class: }
+@app.route('/api/delete-class-data', methods=['POST'])
+def delete_class_data():
+    data = request.get_json()
+    deleteClass(data["class"])
+
+# expects { class: }
+@app.route('/api/fetch-student-feedback', methods=['POST'])
+def fetch_student_feedback():
+    data = request.get_json()
+    return fetchStudentFeedback(data["class"])
 
 if __name__ == "__main__":
     app.run(debug = True, port = 5000)
