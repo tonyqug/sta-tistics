@@ -79,5 +79,11 @@ def fetch_class_slide():
 def fetch_all_classes():
     return jsonify(fetchAllClasses())
 
+
+@app.route('/api/fetch-segmented-questions', methods=['POST'])
+def fetch_segmented_questions():
+    data = request.get_json()
+    return jsonify(fetchSegmentedQuestions(data["classCode"]))
+
 if __name__ == "__main__":
     app.run(debug = True, port = 5328)

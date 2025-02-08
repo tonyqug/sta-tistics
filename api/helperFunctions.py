@@ -123,3 +123,24 @@ def fetchAllClasses():
     # Extract the 'class' values from the response
     class_list = [item['class'] for item in response.data]
     return class_list
+
+
+def fetchSegmentedQuestions(classCode):
+  
+    # Fetch questions for the specified class
+    response = client.table("your_table_name").select("slide, question").eq("class", classCode).execute()
+
+    # Initialize a dictionary to hold questions grouped by slide
+    questions_by_slide = {}
+
+    # Iterate through the fetched rows
+    for row in response.data:
+        slide_number = row["slide"]
+        question = row["question"]
+
+        # Append the question to the corresponding slide number
+        if slide_number not in questions_by_slide:
+            questions_by_slide[slide_number] = []
+        questions_by_slide[slide_number].append(question)
+
+    return questions_by_slide
