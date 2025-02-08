@@ -26,7 +26,6 @@ export default function FeedbackForm() {
     }, 1000)  
     console.log('Feedback submitted:', feedback);
     await sendToBackend(feedback);
-    setFeedback('');
     
   };
   const handleQuestionSubmit = async (question:string) => {
