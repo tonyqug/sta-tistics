@@ -7,9 +7,12 @@ from dotenv import load_dotenv
 genai.configure(api_key=os.getenv("GEMINI_KEY"))
 genaimodel = genai.GenerativeModel('gemini-1.5-flash')
 
+from flask_cors import CORS
+
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local"))
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://tonyq.vercel.app"]}})
 
 @app.route("/api/python")
 def hello_world():
@@ -36,6 +39,7 @@ client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 def insertStudentFeedback(data):
     return client.from_("student_feedback").insert(data).execute()
+
 
 def insertStudentQuestions(data):
     return client.from_("student_questions").insert(data).execute()
@@ -70,6 +74,7 @@ def insert_student_feedback():
     data = request.get_json()
     data["slide"] = fetchClassData(data["class"])["slide"]
     insertStudentFeedback(data)
+    return {}
 
 # expects { class: , student: , question: }
 @app.route('/api/insert-student-question', methods=['POST'])
@@ -99,3 +104,6 @@ def delete_class_data():
 def upload_presentation():
     data = request.get_json()
     uploadPresentation(data)
+
+if __name__ == "__main__":
+    app.run(debug = True, port = 5000)
