@@ -11,8 +11,8 @@ export default function Home() {
       <div className="text-xl font-bold">Sta-tistics</div>
       <div className="flex space-x-4">
    
-        <Link href="/about" >Student</Link>
-        <Link href="/contact">Teacher</Link>
+        <Link href="/student" >Student</Link>
+        <Link href="/teacher">Teacher</Link>
       </div>
     </div>
   )
