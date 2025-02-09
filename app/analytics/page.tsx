@@ -40,7 +40,7 @@ const customTheme: any = {
 export default function AnalyticsPage() {
   const {ClassCode, setClassCode} = useClass();
   const [responseData, setResponseData] = useState({});
-
+  const [data, setData] = useState<any>([]);
   const grabData = async ()=> {
     let dataset : {[id: string] : {[id : string] : any}}= {}
     try {
@@ -100,21 +100,26 @@ export default function AnalyticsPage() {
       });
 
       setResponseData(dataset)
-
+      const data2: any = [];
+      Object.entries(responseData).forEach(([key, value] : [any, any])=>{
+        value["name"] = key
+        data2.push(value)
+      })
+      setData(data2)
+    
     } catch (error) {
       console.error('Failed to send data to backend:', error);
     }
   }
   useEffect(()=>{grabData()}, [ClassCode])
 
-  const questions = [{question:"How do you do this?", answer:"Like this"}, {question:"What is the meaning of that word?", answer:"It means what it means"}, {question:"How do you do that?", answer:"Exactly how you saw your teacher do it"}, {question:"What kind of software was used to make this tool?", answer:"Nothing, basically"}]
-  const data : any = [];
 
-  Object.entries(responseData).forEach(([key, value] : [any, any])=>{
-    value["name"] = key
-    data.push(value)
-  })
+  
+  // const questions = [{question:"How do you do this?", answer:"Like this"}, {question:"What is the meaning of that word?", answer:"It means what it means"}, {question:"How do you do that?", answer:"Exactly how you saw your teacher do it"}, {question:"What kind of software was used to make this tool?", answer:"Nothing, basically"}]
+  
 
+
+ 
   console.log(data)
   
   return (
