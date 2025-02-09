@@ -128,7 +128,7 @@ def fetchAllClasses():
 def fetchSegmentedQuestions(classCode):
   
     # Fetch questions for the specified class
-    response = client.table("your_table_name").select("slide, question").eq("class", classCode).execute()
+    response = client.table("student_questions").select("slide, question").eq("class", classCode).execute()
 
     # Initialize a dictionary to hold questions grouped by slide
     questions_by_slide = {}
