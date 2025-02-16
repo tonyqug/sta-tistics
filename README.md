@@ -1,4 +1,4 @@
-# 🎓 TartanHacks 2025
+# 🎓 QUERYDECK (2025)
 
 ## 🚀 Problem: Issues in Large Classrooms
 Large lecture environments create several challenges for both students and professors:
@@ -19,15 +19,15 @@ Existing approaches often fall short:
 We introduce an AI-powered assistant to revolutionize classroom engagement!
 
 ### 📌 For Professors
-✅ **Slide Presentation Suite** - Enhanced lecture delivery
-✅ **Live AI-Powered Q&A** - Questions answered in real-time for review
-✅ **Student Feedback Analytics** - Insights into understanding per slide
-✅ **Comprehensive Analytics** - Track student comprehension trends
+- ✅ **Slide Presentation Suite** - Enhanced lecture delivery
+- ✅ **Live AI-Powered Q&A** - Questions answered in real-time for review
+- ✅ **Student Feedback Analytics** - Insights into understanding per slide
+- ✅ **Comprehensive Analytics** - Track student comprehension trends
 
 ### 📌 For Students
-✅ **AI-Assisted Q&A** - Automated responses referencing lecture materials
-✅ **RAG-Enhanced Model** - Reducing hallucinations in AI-generated answers
-✅ **One-Click Feedback** - Instant feedback for clarity
+- ✅ **AI-Assisted Q&A** - Automated responses referencing lecture materials
+- ✅ **RAG-Enhanced Model** - Reducing hallucinations in AI-generated answers
+- ✅ **One-Click Feedback** - Instant feedback for clarity
 
 🔬 *Reference:* Béchard & Ayala, 2024, "Reducing Hallucination in Structured Outputs via Retrieval-Augmented Generation" ([arXiv](https://arxiv.org/abs/2404.08189))
 
