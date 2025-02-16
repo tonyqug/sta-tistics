@@ -1,78 +1,44 @@
-<p align="center">
-  <a href="https://nextjs-flask-starter.vercel.app/">
-    <img src="https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png" height="96">
-    <h3 align="center">Next.js Flask Starter</h3>
-  </a>
-</p>
+# 🎓 TartanHacks 2025
 
-<p align="center">Simple Next.js boilerplate that uses <a href="https://flask.palletsprojects.com/">Flask</a> as the API backend.</p>
+## 🚀 Problem: Issues in Large Classrooms
+Large lecture environments create several challenges for both students and professors:
+- ❌ Limited student-professor communication
+- ❌ Unaddressed student questions
+- ❌ Professors unable to gauge class understanding
+- ❌ Intrusive or disruptive questioning
+- ❌ Busy interfaces distracting students
+- ❌ Selective filtering of questions by professors
 
-<br/>
+## 💡 Traditional Solutions
+Existing approaches often fall short:
+- 📢 Open Q&A sessions can be disruptive
+- 📝 Digital platforms lack automation and intelligence
+- ⚡ Students still struggle with real-time clarifications
 
-## Introduction
+## 🤖 Our Solution: Retrieval-Augmented GenAI
+We introduce an AI-powered assistant to revolutionize classroom engagement!
 
-This is a hybrid Next.js + Python app that uses Next.js as the frontend and Flask as the API backend. One great use case of this is to write Next.js apps that use Python AI libraries on the backend.
+### 📌 For Professors
+✅ **Slide Presentation Suite** - Enhanced lecture delivery
+✅ **Live AI-Powered Q&A** - Questions answered in real-time for review
+✅ **Student Feedback Analytics** - Insights into understanding per slide
+✅ **Comprehensive Analytics** - Track student comprehension trends
 
-## How It Works
+### 📌 For Students
+✅ **AI-Assisted Q&A** - Automated responses referencing lecture materials
+✅ **RAG-Enhanced Model** - Reducing hallucinations in AI-generated answers
+✅ **One-Click Feedback** - Instant feedback for clarity
 
-The Python/Flask server is mapped into to Next.js app under `/api/`.
+🔬 *Reference:* Béchard & Ayala, 2024, "Reducing Hallucination in Structured Outputs via Retrieval-Augmented Generation" ([arXiv](https://arxiv.org/abs/2404.08189))
 
-This is implemented using [`next.config.js` rewrites](https://github.com/vercel/examples/blob/main/python/nextjs-flask/next.config.js) to map any request to `/api/:path*` to the Flask API, which is hosted in the `/api` folder.
+## ⚠️ Limitations
+- 🛠 Currently using a **weaker** GenAI model due to resource constraints
+- 🔄 While RAG improves accuracy, **hallucinations cannot be fully eliminated**
+- 📊 AI highlights frequently asked questions, but human moderation is still needed
 
-On localhost, the rewrite will be made to the `127.0.0.1:5328` port, which is where the Flask server is running.
+## 🎯 Future Prospects
+- ✨ **Teacher Assistant Mode**: Allows TAs to flag and refine AI responses
+- 🎥 **Demo & Q&A**: Upcoming showcase of the system in action!
 
-In production, the Flask server is hosted as [Python serverless functions](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python) on Vercel.
-
-## Demo
-
-https://nextjs-flask-starter.vercel.app/
-
-## Deploy Your Own
-
-You can clone & deploy it to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-title=Next.js%20Flask%20Starter&demo-description=Simple%20Next.js%20boilerplate%20that%20uses%20Flask%20as%20the%20API%20backend.&demo-url=https%3A%2F%2Fnextjs-flask-starter.vercel.app%2F&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F795TzKM3irWu6KBCUPpPz%2F44e0c6622097b1eea9b48f732bf75d08%2FCleanShot_2023-05-23_at_12.02.15.png&project-name=Next.js%20Flask%20Starter&repository-name=nextjs-flask-starter&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fnextjs-flask&from=vercel-examples-repo)
-
-## Developing Locally
-
-You can clone & create this repo with the following command
-
-```bash
-npx create-next-app nextjs-flask --example "https://github.com/vercel/examples/tree/main/python/nextjs-flask"
-```
-
-## Getting Started
-
-First, install the dependencies:
-
-```bash
-npm install
-# or
-yarn
-# or
-pnpm install
-```
-
-Then, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-The Flask server will be running on [http://127.0.0.1:5328](http://127.0.0.1:5328) – feel free to change the port in `package.json` (you'll also need to update it in `next.config.js`).
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Flask Documentation](https://flask.palletsprojects.com/en/1.1.x/) - learn about Flask features and API.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+---
+👩‍💻 Built for **TartanHacks 2025** | Enhancing education through AI-powered automation
